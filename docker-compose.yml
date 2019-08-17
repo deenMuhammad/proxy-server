@@ -1,0 +1,39 @@
+version: "3.5"
+
+services:
+  app:
+    image: gcr.io/bounce-code/nodes/proxy-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      publicnet:
+        aliases:
+          - internal.iaimhigh.me
+          - dev.iaimhigh.me
+          - iaimhigh.me
+      servicenet:
+        aliases:
+          - proxy.node.internal.iaimhigh.me
+    # volumes:
+      # - ./data/nginx:/etc/nginx/conf.d
+      # - ./data/certbot/conf:/etc/letsencrypt
+      # - ./data/certbot/www:/var/www/certbot
+    ports:
+      - 80:80
+      - 443:443
+      - 1047:1047
+      - 1935:1935
+  # certbot:
+  #   image: certbot/certbot
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    # volumes:
+      # - ./data/certbot/conf:/etc/letsencrypt
+      # - ./data/certbot/www:/var/www/certbot
+
+networks:
+  servicenet:
+    name: iaimhigh-servicenet
+  publicnet:
+    name: iaimhigh-publicnet
